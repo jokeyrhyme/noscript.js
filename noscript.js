@@ -71,7 +71,7 @@ var noscript = (function (window) {
 
   function trashObject(obj) {
     var prop;
-    if (obj && typeof obj === 'object') {
+    if (obj && typeof obj === 'object' && obj.hasOwnProperty) {
       for (prop in obj) {
         // check, and don't bother with inherited properties
         if (obj.hasOwnProperty(prop)) {

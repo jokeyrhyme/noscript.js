@@ -11,6 +11,20 @@ function assert(condition, message) {
   }
 }
 
+function loadIframe(src, done) {
+  'use strict';
+  var iframe;
+  iframe = document.getElementById('iframe');
+  iframe.onload = function () {
+    done();
+  };
+  if (iframe.attachEvent) {
+    iframe.attachEvent('onload', iframe.onload, false);
+  }
+  iframe.src = src;
+  return iframe;
+}
+
 mocha.setup('tdd');
 
 suite('noscript.js', function () {
@@ -21,15 +35,11 @@ suite('noscript.js', function () {
     var iframe;
 
     suiteSetup(function (done) {
-      iframe = document.getElementById('iframe');
-      iframe.onload = function () {
-        done();
-      };
-      iframe.src = 'require/iframe.html';
+      iframe = loadIframe('require/iframe.html', done);
     });
 
     test('Require.JS could not require module', function () {
-      assert(!iframe.contentWindow.hasOwnProperty('result'));
+      assert(!iframe.contentWindow.result);
     });
 
   });
@@ -39,11 +49,7 @@ suite('noscript.js', function () {
     var iframe;
 
     suiteSetup(function (done) {
-      iframe = document.getElementById('iframe');
-      iframe.onload = function () {
-        done();
-      };
-      iframe.src = 'jquery/iframe.html';
+      iframe = loadIframe('jquery/iframe.html', done);
     });
 
     test('noscript elements are gone', function () {
@@ -68,11 +74,7 @@ suite('noscript.js', function () {
     var iframe;
 
     suiteSetup(function (done) {
-      iframe = document.getElementById('iframe');
-      iframe.onload = function () {
-        done();
-      };
-      iframe.src = 'angular/iframe.html';
+      iframe = loadIframe('angular/iframe.html', done);
     });
 
     test('Angular.JS could not compile content', function () {
