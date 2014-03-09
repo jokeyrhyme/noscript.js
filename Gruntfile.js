@@ -64,12 +64,31 @@ module.exports = function (grunt) {
       }
     },
 
+    uglify: {
+      all: {
+        files: {
+          'noscript.min.js': [
+            'lib/*.js',
+            'noscript.js'
+          ]
+        },
+        options: {
+          preserveComments: 'some',
+          beautify: {
+            ascii_only: true,
+            max_line_len: 80
+          },
+          compress: {}
+        }
+      }
+    },
+
     watch: {
       files: [
         '**/*.html',
         '<%= jslint.all.src %>'
       ],
-      tasks: ['jslint', 'mocha'],
+      tasks: ['uglify', 'jslint', 'mocha'],
       options: {
         interrupt: true
       }
@@ -79,12 +98,14 @@ module.exports = function (grunt) {
 
   // These plugins provide necessary tasks.
   grunt.loadNpmTasks('grunt-contrib-connect');
+  grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-jslint');
   grunt.loadNpmTasks('grunt-mocha');
 
+  grunt.registerTask('build', ['uglify']);
   grunt.registerTask('test', ['jslint', 'connect:server', 'mocha']);
   grunt.registerTask('serve', ['connect:server', 'watch']);
-  grunt.registerTask('default', ['test']);
+  grunt.registerTask('default', ['build', 'test']);
 
 };
