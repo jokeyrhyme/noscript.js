@@ -1,0 +1,30 @@
+{
+  "name": "noscript.js",
+  "version": "0.0.0",
+  "description": "stop other JavaScript (as best as can be done) and show `noscript` elements",
+  "main": "noscript.js",
+  "scripts": {
+    "test": "./node_modules/.bin/gulp test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/jokeyrhyme/noscript.js.git"
+  },
+  "keywords": [
+    "noscript",
+    "browser"
+  ],
+  "author": "\"Ron Waldon\" (http://jokeyrhy.me/)",
+  "license": "BSD",
+  "bugs": {
+    "url": "https://github.com/jokeyrhyme/noscript.js/issues"
+  },
+  "homepage": "https://github.com/jokeyrhyme/noscript.js",
+  "devDependencies": {
+    "mocha": "~1.17.1",
+    "jquery": "~2.1.0",
+    "angular": "~1.2.14",
+    "requirejs": "~2.1.11",
+    "modernizr": "~2.7.2"
+  }
+}

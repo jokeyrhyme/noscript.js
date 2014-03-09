@@ -27,30 +27,31 @@ var noscript = (function (window) {
   }
 
   function noop() {
-    throw new Error('synthetic error is used to disable JavaScript');
+    throw 'synthetic error is used to disable JavaScript';
   }
 
   function trashObject(obj) {
     var prop;
     if (obj && typeof obj === 'object') {
       for (prop in obj) {
+        // check, and don't bother with inherited properties
         if (obj.hasOwnProperty(prop)) {
-          if ((obj === window || obj === document) &&
-              trashObject.AVOID_PROPS.indexOf(prop) > -1) {
-            continue;
-          }
-          if (trashObject.AVOID_TYPES.indexOf(typeof obj[prop]) > -1) {
-            continue;
-          }
+          // check, and don't bother with certain magic properties
+          if (!(obj === window || obj === document) ||
+              trashObject.AVOID_PROPS.indexOf(prop) === -1) {
+            // check, and don't bother with certain types
+            if (trashObject.AVOID_TYPES.indexOf(typeof obj[prop]) === -1) {
           try {
             obj[prop] = null;
             delete obj[prop];
-          } catch (err1) {}
+              } catch (ignore) {}
           try {
             if (obj[prop]) {
               obj[prop] = noop;
             }
-          } catch (err2) {}
+              } catch (ignore) {}
+            }
+          }
         }
       }
     }
@@ -67,7 +68,8 @@ var noscript = (function (window) {
     HTMLElement && HTMLElement.prototype,
     Element && Element.prototype,
     Node && Node.prototype,
-    XMLHttpRequest && XMLHttpRequest.prototype
+    XMLHttpRequest && XMLHttpRequest.prototype,
+    Storage && Storage.prototype
   ];
 
   return {
