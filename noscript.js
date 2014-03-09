@@ -37,33 +37,36 @@ var noscript = (function (window) {
         // check, and don't bother with inherited properties
         if (obj.hasOwnProperty(prop)) {
           // check, and don't bother with certain magic properties
-          if (!(obj === window || obj === document) ||
-              trashObject.AVOID_PROPS.indexOf(prop) === -1) {
+          if (!trashObject.SPECIAL_OBJECTS[obj] ||
+              trashObject.SPECIAL_OBJECTS[obj].indexOf(prop) === -1) {
             // check, and don't bother with certain types
-            if (trashObject.AVOID_TYPES.indexOf(typeof obj[prop]) === -1) {
-          try {
-            obj[prop] = null;
-            delete obj[prop];
-              } catch (ignore) {}
-          try {
-            if (obj[prop]) {
-              obj[prop] = noop;
-            }
-              } catch (ignore) {}
-            }
+            try {
+              if (trashObject.AVOID_TYPES.indexOf(typeof obj[prop]) === -1) {
+                obj[prop] = null;
+                delete obj[prop];
+                if (obj[prop]) {
+                  obj[prop] = noop;
+                }
+              }
+            } catch (ignore) {}
           }
         }
       }
     }
   }
   trashObject.AVOID_TYPES = ['number', 'string', 'boolean', 'array'];
-  trashObject.AVOID_PROPS = ['location', 'frameElement'];
+
+  trashObject.SPECIAL_OBJECTS = {};
+  // messing with the 'location' property causes browser navigation
+  trashObject.SPECIAL_OBJECTS[window] = ['location'];
+  trashObject.SPECIAL_OBJECTS[document] = ['location'];
 
   // clumsily implement a blacklist of JavaScript objects
 
   trashees = [
     window.console || window.debug,
     window,
+    document,
     HTMLDocument && HTMLDocument.prototype,
     HTMLElement && HTMLElement.prototype,
     Element && Element.prototype,
