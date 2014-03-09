@@ -67,12 +67,12 @@ var noscript = (function (window) {
     window.console || window.debug,
     window,
     document,
-    HTMLDocument && HTMLDocument.prototype,
-    HTMLElement && HTMLElement.prototype,
-    Element && Element.prototype,
-    Node && Node.prototype,
-    XMLHttpRequest && XMLHttpRequest.prototype,
-    Storage && Storage.prototype
+    window.HTMLDocument && HTMLDocument.prototype,
+    window.HTMLElement && HTMLElement.prototype,
+    window.Element && Element.prototype,
+    window.Node && Node.prototype,
+    window.XMLHttpRequest && XMLHttpRequest.prototype,
+    window.Storage && Storage.prototype
   ];
 
   return {
