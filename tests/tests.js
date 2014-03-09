@@ -79,7 +79,7 @@ suite('noscript.js', function () {
 
     test('Angular.JS could not compile content', function () {
       var html = iframe.contentDocument.body.innerHTML;
-      assert(html.indexOf('JavaScript is disabled!') === -1);
+      assert(html.indexOf('{{ message }}') > -1);
     });
 
   });

@@ -2,10 +2,12 @@
 
 /*global HTMLDocument, HTMLElement, Element, Node*/
 
-var noscript = (function (window) {
+var noscript = window.noscript || {};
+
+noscript.show = (function () {
   'use strict';
 
-  var isNoscriptContentAvailable, noscripts, trashees;
+  var isNoscriptContentAvailable, noscripts;
 
   isNoscriptContentAvailable = (function () {
     var el = document.createElement('p');
@@ -65,9 +67,32 @@ var noscript = (function (window) {
     }
   }
 
-  function noop() {
-    throw 'synthetic error is used to disable JavaScript';
-  }
+  return function () {
+    noscripts = document.getElementsByTagName('noscript');
+    if (isNoscriptContentAvailable) {
+      // unwrap all noscript elements
+      // noscript tags shouldn't be nested, but we'll cover this case anyway
+      while (noscripts.length) {
+        unwrapElements(noscripts);
+        noscripts = document.getElementsByTagName('noscript');
+      }
+    } else {
+      // browser is broken, and page is damaged
+      // we need to now refetch the page to get the intended contents :S
+      if (noscripts.length) {
+        refetchNoscripts();
+      }
+    }
+  };
+
+}());
+
+noscript.lockdown = (function () {
+  'use strict';
+
+  var noop, trashees;
+
+  noop = noscript.noop;
 
   function trashObject(obj) {
     var prop;
@@ -114,32 +139,13 @@ var noscript = (function (window) {
     window.Storage && Storage.prototype
   ];
 
-  return {
-    show: function () {
-      noscripts = document.getElementsByTagName('noscript');
-      if (isNoscriptContentAvailable) {
-        // unwrap all noscript elements
-        // noscript tags shouldn't be nested, but we'll cover this case anyway
-        while (noscripts.length) {
-          unwrapElements(noscripts);
-          noscripts = document.getElementsByTagName('noscript');
-        }
-      } else {
-        // browser is broken, and page is damaged
-        // we need to now refetch the page to get the intended contents :S
-        if (noscripts.length) {
-          refetchNoscripts();
-        }
-      }
-    },
-    lockdown: function () {
-      var t;
-      t = trashees.length;
-      while (t > 0) {
-        t -= 1;
-        trashObject(trashees[t]);
-      }
+  return function () {
+    var t;
+    t = trashees.length;
+    while (t > 0) {
+      t -= 1;
+      trashObject(trashees[t]);
     }
+    noscript.redHerrings();
   };
-
-}(this));
+}());

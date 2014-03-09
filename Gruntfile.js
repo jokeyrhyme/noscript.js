@@ -25,7 +25,7 @@ module.exports = function (grunt) {
           '!**/node_modules/**',
           '!**/bower_components/**',
           '!**/*.min.js',
-          '!lib/insertAdjacentHTML.js'
+          '!lib/*.js'
         ],
         directives: {},
         options: {
@@ -69,6 +69,7 @@ module.exports = function (grunt) {
         files: {
           'noscript.min.js': [
             'lib/*.js',
+            'src/*.js',
             'noscript.js'
           ]
         },
