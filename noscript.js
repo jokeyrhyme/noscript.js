@@ -5,7 +5,46 @@
 var noscript = (function (window) {
   'use strict';
 
-  var noscripts, trashees, t;
+  var isNoscriptContentAvailable, noscripts, trashees;
+
+  isNoscriptContentAvailable = (function () {
+    var el = document.createElement('p');
+    el.innerHTML = 'test<noscript><br /></noscript>';
+    switch (el.innerHTML.toLowerCase()) {
+    case '':
+    case 'test':
+    case 'test<noscript></noscript>':
+      return false;
+    default:
+      return true;
+    }
+  }());
+
+  function refetchNoscripts() {
+    var xhr = new XMLHttpRequest();
+    // yes, this is an evil synchronous XHR
+    xhr.open('GET', document.location.href, false);
+    xhr.onreadystatechange = function () {
+      var matches, m, elements, noscript, tagMatches;
+      /*jslint regexp:true*/ // intentionally grabby expressions
+      if (xhr.readyState === 4 && xhr.status < 300 && xhr.responseText) {
+        matches = xhr.responseText.match(/<\s*noscript[^>]*>([\s\S]*?)<\/\s*noscript\s*>/ig);
+        elements = document.getElementsByTagName('noscript');
+        if (matches && elements && matches.length === elements.length) {
+          m = matches.length;
+          while (m > 0) {
+            m -= 1;
+            noscript = elements[m];
+            tagMatches = matches[m].match(/<\s*noscript[^>]*>([\s\S]*?)<\/\s*noscript\s*>/i);
+            noscript.insertAdjacentHTML('beforebegin', tagMatches[1]);
+            noscript.parentNode.removeChild(noscript);
+          }
+        }
+      }
+      /*jslint regexp:false*/
+    };
+    xhr.send();
+  }
 
   function unwrapElements(elements) {
     var i, j, el, child, text;
@@ -77,15 +116,24 @@ var noscript = (function (window) {
 
   return {
     show: function () {
-      // unwrap all noscript elements
-      // noscript tags shouldn't be nested, but we'll cover this case anyway
       noscripts = document.getElementsByTagName('noscript');
-      while (noscripts.length) {
-        unwrapElements(noscripts);
-        noscripts = document.getElementsByTagName('noscript');
+      if (isNoscriptContentAvailable) {
+        // unwrap all noscript elements
+        // noscript tags shouldn't be nested, but we'll cover this case anyway
+        while (noscripts.length) {
+          unwrapElements(noscripts);
+          noscripts = document.getElementsByTagName('noscript');
+        }
+      } else {
+        // browser is broken, and page is damaged
+        // we need to now refetch the page to get the intended contents :S
+        if (noscripts.length) {
+          refetchNoscripts();
+        }
       }
     },
     lockdown: function () {
+      var t;
       t = trashees.length;
       while (t > 0) {
         t -= 1;
