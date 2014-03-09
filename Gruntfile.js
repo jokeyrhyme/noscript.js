@@ -25,7 +25,7 @@ module.exports = function (grunt) {
           '!**/node_modules/**',
           '!**/bower_components/**',
           '!**/*.min.js',
-          '!lib/*.js'
+          '!lib/insertAdjacentHTML.js'
         ],
         directives: {},
         options: {
