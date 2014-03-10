@@ -2,6 +2,17 @@
 /*global mocha, suite, test, suiteSetup, suiteTeardown, setup, teardown*/ // Mocha
 
 /*global noscript*/ // code under test
+/*jslint nomen:true*/ // Karma's global __karma__
+
+// add Mocha's div if it is missing
+(function () {
+  'use strict';
+  var div;
+  div = document.getElementById('mocha');
+  if (!div) {
+    document.body.insertAdjacentHTML('afterbegin', '<div id="mocha"></div>');
+  }
+}());
 
 mocha.setup('tdd');
 
@@ -24,6 +35,9 @@ suite('noscript.js', function () {
     if (iframe.attachEvent) {
       iframe.attachEvent('onload', iframe.onload, false);
     }
+    if (window.__karma__) {
+      src = '/base/tests/' + src;
+    }
     iframe.src = src;
     return iframe;
   }
@@ -32,18 +46,28 @@ suite('noscript.js', function () {
     return (iframe.contentDocument || iframe.contentWindow.document).body.innerHTML;
   }
 
+  suiteSetup(function () {
+    document.body.insertAdjacentHTML('beforeend', '<noscript><p>JavaScript might be disabled!</p></noscript>');
+    document.body.insertAdjacentHTML('beforeend', '<iframe id="iframe" src="" height="300" width="300"></iframe>');
+  });
+
   suite('noscript elements', function () {
     var html;
 
-    suiteSetup(function () {
+    test('noscript elements are initially present', function () {
       html = document.body.innerHTML;
+      assert(html.indexOf('<noscript>') !== -1);
     });
 
-    test('noscript elements are gone', function () {
+    test('noscript.show() kills noscript elements', function () {
+      noscript.show();
+      html = document.body.innerHTML;
       assert(html.indexOf('<noscript>') === -1);
     });
 
-    test('noscript content is present', function () {
+    test('noscript.show() displays noscript contents', function () {
+      noscript.show();
+      html = document.body.innerHTML;
       assert(html.indexOf('JavaScript might be disabled!') > -1);
     });
 
