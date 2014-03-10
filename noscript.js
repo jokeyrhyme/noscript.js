@@ -139,6 +139,8 @@ noscript.lockdown = (function () {
     window.Storage && Storage.prototype
   ];
 
+  window.onerror = function () { return true; };
+
   return function () {
     var t;
     t = trashees.length;
