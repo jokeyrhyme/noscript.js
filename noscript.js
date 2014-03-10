@@ -28,22 +28,22 @@ noscript.show = (function () {
     // yes, this is an evil synchronous XHR
     xhr.open('GET', document.location.href, false);
     xhr.send(null);
-      /*jslint regexp:true*/ // intentionally grabby expressions
-      if (xhr.readyState === 4 && xhr.status < 300 && xhr.responseText) {
-        matches = xhr.responseText.match(/<\s*noscript[^>]*>([\s\S]*?)<\/\s*noscript\s*>/ig);
-        elements = document.getElementsByTagName('noscript');
-        if (matches && elements && matches.length === elements.length) {
-          m = matches.length;
-          while (m > 0) {
-            m -= 1;
-            noscript = elements[m];
-            tagMatches = matches[m].match(/<\s*noscript[^>]*>([\s\S]*?)<\/\s*noscript\s*>/i);
-            noscript.insertAdjacentHTML('beforebegin', tagMatches[1]);
-            noscript.parentNode.removeChild(noscript);
-          }
+    /*jslint regexp:true*/ // intentionally grabby expressions
+    if (xhr.readyState === 4 && xhr.status < 300 && xhr.responseText) {
+      matches = xhr.responseText.match(/<\s*noscript[^>]*>([\s\S]*?)<\/\s*noscript\s*>/ig);
+      elements = document.getElementsByTagName('noscript');
+      if (matches && elements && matches.length === elements.length) {
+        m = matches.length;
+        while (m > 0) {
+          m -= 1;
+          noscript = elements[m];
+          tagMatches = matches[m].match(/<\s*noscript[^>]*>([\s\S]*?)<\/\s*noscript\s*>/i);
+          noscript.insertAdjacentHTML('beforebegin', tagMatches[1]);
+          noscript.parentNode.removeChild(noscript);
         }
       }
-      /*jslint regexp:false*/
+    }
+    /*jslint regexp:false*/
   }
 
   function unwrapElements(elements) {
@@ -93,7 +93,7 @@ noscript.lockdown = (function () {
   noop = noscript.noop;
 
   function trashObject(obj) {
-    var prop;
+    var prop, type;
     if (obj && typeof obj === 'object' && obj.hasOwnProperty) {
       for (prop in obj) {
         // check, and don't bother with inherited properties
@@ -103,9 +103,12 @@ noscript.lockdown = (function () {
               trashObject.SPECIAL_OBJECTS[obj].indexOf(prop) === -1) {
             // check, and don't bother with certain types
             try {
-              if (trashObject.AVOID_TYPES.indexOf(typeof obj[prop]) === -1) {
-                obj[prop] = null;
-                delete obj[prop];
+              type = typeof obj[prop];
+              if (trashObject.AVOID_TYPES.indexOf(type) === -1) {
+                if (type !== 'function') {
+                  obj[prop] = null;
+                  delete obj[prop];
+                }
                 if (obj[prop]) {
                   obj[prop] = noop;
                 }

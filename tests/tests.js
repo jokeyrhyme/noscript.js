@@ -40,6 +40,15 @@ suite('noscript.js', function () {
       iframe = loadIframe('require/iframe.html', done);
     });
 
+    test('define() doesn\'t work', function () {
+      try {
+        iframe.contentWindow.define('mod', function () { return true; });
+        assert(false);
+      } catch (err) {
+        assert(err);
+      }
+    });
+
     test('Require.JS could not require module', function () {
       assert(!iframe.contentWindow.result);
     });
