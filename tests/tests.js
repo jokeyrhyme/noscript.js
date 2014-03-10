@@ -3,32 +3,34 @@
 
 /*global noscript*/ // code under test
 
-// basic assert function, because Chai won't work in old browsers
-function assert(condition, message) {
-  'use strict';
-  if (!condition) {
-    throw message || "Assertion failed";
-  }
-}
-
-function loadIframe(src, done) {
-  'use strict';
-  var iframe;
-  iframe = document.getElementById('iframe');
-  iframe.onload = function () {
-    done();
-  };
-  if (iframe.attachEvent) {
-    iframe.attachEvent('onload', iframe.onload, false);
-  }
-  iframe.src = src;
-  return iframe;
-}
-
 mocha.setup('tdd');
 
 suite('noscript.js', function () {
   'use strict';
+
+  // basic assert function, because Chai won't work in old browsers
+  function assert(condition, message) {
+    if (!condition) {
+      throw message || "Assertion failed";
+    }
+  }
+
+  function loadIframe(src, done) {
+    var iframe;
+    iframe = document.getElementById('iframe');
+    iframe.onload = function () {
+      done();
+    };
+    if (iframe.attachEvent) {
+      iframe.attachEvent('onload', iframe.onload, false);
+    }
+    iframe.src = src;
+    return iframe;
+  }
+
+  function getIframeHTML(iframe) {
+    return (iframe.contentDocument || iframe.contentWindow.document).body.innerHTML;
+  }
 
   suite('vs Require.JS', function () {
 
@@ -53,12 +55,12 @@ suite('noscript.js', function () {
     });
 
     test('noscript elements are gone', function () {
-      var html = iframe.contentDocument.body.innerHTML;
+      var html = getIframeHTML(iframe);
       assert(html.indexOf('<noscript>') === -1);
     });
 
     test('noscript content is present', function () {
-      var html = iframe.contentDocument.body.innerHTML;
+      var html = getIframeHTML(iframe);
       assert(html.indexOf('JavaScript is disabled!') > -1);
     });
 
@@ -78,7 +80,7 @@ suite('noscript.js', function () {
     });
 
     test('Angular.JS could not compile content', function () {
-      var html = iframe.contentDocument.body.innerHTML;
+      var html = getIframeHTML(iframe);
       assert(html.indexOf('{{ message }}') > -1);
     });
 
