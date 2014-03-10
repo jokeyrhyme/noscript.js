@@ -32,6 +32,23 @@ suite('noscript.js', function () {
     return (iframe.contentDocument || iframe.contentWindow.document).body.innerHTML;
   }
 
+  suite('noscript elements', function () {
+    var html;
+
+    suiteSetup(function () {
+      html = document.body.innerHTML;
+    });
+
+    test('noscript elements are gone', function () {
+      assert(html.indexOf('<noscript>') === -1);
+    });
+
+    test('noscript content is present', function () {
+      assert(html.indexOf('JavaScript might be disabled!') > -1);
+    });
+
+  });
+
   suite('vs Require.JS', function () {
 
     var iframe;
@@ -61,16 +78,6 @@ suite('noscript.js', function () {
 
     suiteSetup(function (done) {
       iframe = loadIframe('jquery/iframe.html', done);
-    });
-
-    test('noscript elements are gone', function () {
-      var html = getIframeHTML(iframe);
-      assert(html.indexOf('<noscript>') === -1);
-    });
-
-    test('noscript content is present', function () {
-      var html = getIframeHTML(iframe);
-      assert(html.indexOf('JavaScript is disabled!') > -1);
     });
 
     test('jQuery and $ are not defined', function () {

@@ -1,5 +1,6 @@
 /*jslint indent:2, browser:true*/
 
+/*global ActiveXObject*/ // Internet Explorer 6
 /*global HTMLDocument, HTMLElement, Element, Node*/
 
 var noscript = window.noscript || {};
@@ -17,14 +18,19 @@ noscript.show = (function () {
     case 'test':
     case 'test<noscript></noscript>':
       return false;
-    default:
-      return true;
     }
+    return true;
   }());
 
   function refetchNoscripts() {
     var matches, m, elements, noscript, tagMatches, xhr;
-    xhr = new XMLHttpRequest();
+    if (window.XMLHttpRequest) {
+      xhr = new XMLHttpRequest();
+    } else if (window.ActiveXObject) {
+      xhr = new ActiveXObject('Microsoft.XMLHTTP');
+    } else {
+      throw 'unable to fetch original HTML';
+    }
     // yes, this is an evil synchronous XHR
     xhr.open('GET', document.location.href, false);
     xhr.send(null);
@@ -54,11 +60,14 @@ noscript.show = (function () {
       i -= 1;
       el = elements[i];
       j = el.childNodes.length;
+      if (j === 0 && el.innerHTML) {
+        el.insertAdjacentHTML('beforebegin', el.innerHTML);
+      }
       while (j > 0) {
         j -= 1;
         child = el.childNodes[j];
         // note: textContent / innerText may trim the contents
-        text = child.textContent || child.innerText;
+        text = child.textContent || child.innerText || child.innerHTML;
         el.insertAdjacentHTML('beforebegin', text);
       }
       el.parentNode.removeChild(el);
