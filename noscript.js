@@ -131,9 +131,6 @@ noscript.lockdown = (function () {
   trashees = [
     window.console || window.debug,
     window,
-    document,
-    window.HTMLDocument && HTMLDocument.prototype,
-    window.HTMLElement && HTMLElement.prototype,
     window.Element && Element.prototype,
     window.Node && Node.prototype,
     window.XMLHttpRequest && XMLHttpRequest.prototype,
