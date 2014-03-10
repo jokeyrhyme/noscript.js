@@ -23,11 +23,11 @@ noscript.show = (function () {
   }());
 
   function refetchNoscripts() {
-    var xhr = new XMLHttpRequest();
+    var matches, m, elements, noscript, tagMatches, xhr;
+    xhr = new XMLHttpRequest();
     // yes, this is an evil synchronous XHR
     xhr.open('GET', document.location.href, false);
-    xhr.onreadystatechange = function () {
-      var matches, m, elements, noscript, tagMatches;
+    xhr.send(null);
       /*jslint regexp:true*/ // intentionally grabby expressions
       if (xhr.readyState === 4 && xhr.status < 300 && xhr.responseText) {
         matches = xhr.responseText.match(/<\s*noscript[^>]*>([\s\S]*?)<\/\s*noscript\s*>/ig);
@@ -44,8 +44,6 @@ noscript.show = (function () {
         }
       }
       /*jslint regexp:false*/
-    };
-    xhr.send();
   }
 
   function unwrapElements(elements) {
