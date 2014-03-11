@@ -1,11 +1,8 @@
 {
   "name": "noscript.js",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "stop other JavaScript (as best as can be done) and show `noscript` elements",
-  "main": "noscript.js",
-  "scripts": {
-    "test": "./node_modules/.bin/gulp test"
-  },
+  "main": "noscript.min.js",
   "repository": {
     "type": "git",
     "url": "git://github.com/jokeyrhyme/noscript.js.git"
@@ -26,5 +23,14 @@
     "angular": "~1.2",
     "requirejs": "~2.1",
     "modernizr": "~2.7"
-  }
+  },
+  "files": [
+    "noscript.js",
+    "noscript.min.js",
+    "LICENSE",
+    "README.md",
+    "lib",
+    "src",
+    "bower.json"
+  ]
 }
