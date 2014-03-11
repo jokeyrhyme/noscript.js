@@ -2,6 +2,13 @@
 
 stop other JavaScript (as best as can be done) and show `noscript` elements
 
+## Installation
+
+You can just grab the `noscript.min.js` file from this repository, or you can
+use Bower:
+
+- `bower install noscript`
+
 
 ## Usage
 
