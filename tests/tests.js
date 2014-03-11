@@ -47,28 +47,31 @@ suite('noscript.js', function () {
   }
 
   suiteSetup(function () {
-    document.body.insertAdjacentHTML('beforeend', '<noscript><p>JavaScript might be disabled!</p></noscript>');
     document.body.insertAdjacentHTML('beforeend', '<iframe id="iframe" src="" height="300" width="300"></iframe>');
   });
 
   suite('noscript elements', function () {
-    var html;
+    var iframe;
+
+    suiteSetup(function (done) {
+      iframe = loadIframe('noscript/iframe.html', done);
+    });
 
     test('noscript elements are initially present', function () {
-      html = document.body.innerHTML;
+      var html = getIframeHTML(iframe).toLowerCase();
       assert(html.indexOf('<noscript>') !== -1);
     });
 
     test('noscript.show() kills noscript elements', function () {
-      noscript.show();
-      html = document.body.innerHTML;
+      var html;
+      iframe.contentWindow.noscript.show();
+      html = getIframeHTML(iframe);
       assert(html.indexOf('<noscript>') === -1);
     });
 
     test('noscript.show() displays noscript contents', function () {
-      noscript.show();
-      html = document.body.innerHTML;
-      assert(html.indexOf('JavaScript might be disabled!') > -1);
+      var html = getIframeHTML(iframe);
+      assert(html.indexOf('JavaScript is disabled!') > -1);
     });
 
   });

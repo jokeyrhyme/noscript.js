@@ -51,8 +51,6 @@ module.exports = function (config) {
       'Chrome',
       'Firefox',
       'Safari',
-      'iOS',
-      'IE6 - WinXP',
       'IE7 - WinXP',
       'IE8 - WinXP',
       'IE9 - Win7',
@@ -64,7 +62,6 @@ module.exports = function (config) {
       mocha: {
         ui: 'tdd'
       }
-    },
-    singleRun: false
+    }
   });
 };

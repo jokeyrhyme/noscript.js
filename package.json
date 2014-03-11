@@ -34,7 +34,6 @@
     "karma-firefox-launcher": "^0.1",
     "karma-html2js-preprocessor": "^0.1",
     "karma-ievms": "0.0.4",
-    "karma-ios-launcher": "0.0.3",
     "karma-jasmine": "^0.1",
     "karma-mocha": "^0.1",
     "karma-phantomjs-launcher": "^0.1",
