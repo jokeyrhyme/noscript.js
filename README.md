@@ -18,8 +18,6 @@ Include `noscript.js` on your web page. This installs a global `noscript`
 object. You may want the poly-fills in the `lib` directory if you plan on using
 this with older browsers.
 
-**TODO**: provide a concatenated version so that there is just one file
-
 ### noscript.show()
 
 This will find all `noscript` elements on the page, and make their contents
