@@ -2,6 +2,8 @@
 
 stop other JavaScript (as best as can be done) and show `noscript` elements
 
+Read more about it in my blog post: [All-Or-Nothing Enhancement](http://jokeyrhy.me/blog/2014/03/13/1/all-or-nothing-enhancement.html)
+
 ## Installation
 
 You can just grab the `noscript.min.js` file from this repository, or you can
